@@ -87,7 +87,7 @@ def train_los_pytorch(epochs=10, batch_size=256, lr=1e-3):
     model_path = models_dir / "los_net.pth"
     torch.save(model.state_dict(), model_path)
     print(f"Saved PyTorch LOS model to {model_path}")
-    print("PyTorch Deep Learning module ✅ COMPLETE")
+    print("PyTorch Deep Learning module  COMPLETE")
     return model
 if __name__ == "__main__":
     train_los_pytorch()
@@ -109,3 +109,4 @@ def load_los_model():
     model.load_state_dict(torch.load(model_path, map_location="cpu"))
     model.eval()
     return model, scaler
+
