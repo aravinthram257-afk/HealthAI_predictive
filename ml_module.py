@@ -31,6 +31,7 @@ def run_los_regression():
     # SAVE MODEL
     joblib.dump(model, "models/rf_los.pkl")
     print("Saved RandomForest model to models/rf_los.pkl")
-    print("Classical ML module ✅ COMPLETE")
+    print("Classical ML module  COMPLETE")
 if __name__ == "__main__":
     run_los_regression()
+
