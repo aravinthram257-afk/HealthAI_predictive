@@ -3,17 +3,13 @@ import torch
 import pandas as pd
 from pathlib import Path
 import joblib
-
 from dl_module import LosNet, load_los
-
-
 # ===== Load LOS model + scaler =====
 @st.cache_resource
 def load_los_model_and_scaler():
     base_dir = Path(__file__).resolve().parent.parent
     models_dir = base_dir / "models"
     model_path = models_dir / "los_net.pth"
-
     df = load_los()
     target_col = "lengthofstay"
     y = df[target_col]
@@ -22,18 +18,13 @@ def load_los_model_and_scaler():
         .drop(columns=[target_col], errors="ignore")
         .fillna(0)
     )
-
-    from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler().fit(X)
-
     model = LosNet(X.shape[1])
     model.load_state_dict(torch.load(model_path, map_location="cpu"))
     model.eval()
-
     feature_columns = X.columns.tolist()
     return model, scaler, feature_columns
-
-
 # ===== Load Sentiment TF-IDF + LogisticRegression =====
 @st.cache_resource
 def load_sentiment_ml_model():
@@ -41,19 +32,13 @@ def load_sentiment_ml_model():
     models_dir = base_dir / "models"
     vec_path = models_dir / "sentiment_tfidf.joblib"
     clf_path = models_dir / "sentiment_logreg.joblib"
-
     vectorizer = joblib.load(vec_path)
     clf = joblib.load(clf_path)
     return vectorizer, clf
-
-
 # ===== Streamlit UI =====
 st.set_page_config(page_title="HealthAI Demo", layout="wide")
 st.title("HealthAI Predictive Suite – Demo")
-
 tab_los, tab_nlp = st.tabs(["LOS Prediction", "Sentiment Analysis"])
-
-
 # --- LOS tab ---
 with tab_los:
     st.header("Length of Stay Prediction")
@@ -79,8 +64,6 @@ with tab_los:
             pred = model_los(x_tensor).squeeze().item()
 
         st.success(f"Predicted length of stay: **{pred:.1f} days**")
-
-
 # --- Sentiment tab ---
 with tab_nlp:
     st.header("Patient Review Sentiment (TF-IDF + Logistic Regression)")
@@ -111,3 +94,4 @@ with tab_nlp:
             st.write(
                 f"Predicted sentiment: **{label}** (p_pos={prob_pos:.3f}, thr={threshold:.2f})"
             )
+
